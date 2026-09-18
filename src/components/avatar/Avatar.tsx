@@ -1,25 +1,18 @@
 import { useAvatar } from "@/lib/avatar/store";
 import { HEAD_Y } from "./dims";
-import { Accessory } from "./parts/Accessory";
+import { HeadAssembly } from "./HeadAssembly";
 import { Body } from "./parts/Body";
-import { FacialHair } from "./parts/FacialHair";
-import { Hair } from "./parts/Hair";
-import { Head } from "./parts/Head";
 import { Outfit } from "./parts/Outfit";
-import { Shoes } from "./parts/Shoes";
 
 export function Avatar() {
   const config = useAvatar((s) => s.config);
+  const lean = config.pose === "walk" ? 0.06 : 0;
   return (
-    <group>
+    <group rotation={[lean, 0, 0]}>
       <Body config={config} />
       <Outfit config={config} />
-      <Shoes config={config} />
-      <group position={[0, HEAD_Y, 0]}>
-        <Head config={config} />
-        <Hair config={config} />
-        <FacialHair config={config} />
-        <Accessory config={config} />
+      <group position={[0, HEAD_Y, 0]} rotation={[config.pose === "wave" ? 0 : 0.04, 0, config.pose === "wave" ? 0.08 : 0]}>
+        <HeadAssembly config={config} />
       </group>
     </group>
   );

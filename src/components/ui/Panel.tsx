@@ -13,6 +13,7 @@ import {
   hairColors,
   hairStyles,
   mustaches,
+  poses,
   shoeColors,
   shoes,
   skinColors,
@@ -22,16 +23,20 @@ import { useAvatar } from "@/lib/avatar/store";
 import { ColorPicker } from "./ColorPicker";
 import { GenderToggle } from "./GenderToggle";
 import { OptionGrid } from "./OptionGrid";
+import { PresetPicker } from "./PresetPicker";
 import { Field, Section } from "./Section";
+import { Toggle } from "./Toggle";
 import { Toolbar } from "./Toolbar";
 
 export function Panel() {
   const config = useAvatar((s) => s.config);
   const set = useAvatar((s) => s.set);
   const setGender = useAvatar((s) => s.setGender);
+  const applyPreset = useAvatar((s) => s.applyPreset);
   const { gender } = config;
   const male = gender === "male";
   const wearingDress = config.dress !== "none";
+  const plainAccessory = config.accessory === "none" || config.accessory === "glasses" || config.accessory === "sunglasses";
 
   return (
     <div className="flex flex-col gap-5">
@@ -41,6 +46,15 @@ export function Panel() {
 
       <Section title="Gender">
         <GenderToggle value={gender} onChange={setGender} />
+        {!male && <Toggle label="Pregnant" value={config.pregnant} onChange={(v) => set({ pregnant: v })} />}
+      </Section>
+
+      <Section title="Presets">
+        <PresetPicker onPick={applyPreset} />
+      </Section>
+
+      <Section title="Pose">
+        <OptionGrid options={poses} value={config.pose} onChange={(v) => set({ pose: v })} />
       </Section>
 
       <Section title="Body">
@@ -92,7 +106,9 @@ export function Panel() {
           <>
             <Field label="Top">
               <OptionGrid options={tops} value={config.top} onChange={(v) => set({ top: v })} />
-              <ColorPicker presets={clothColors} value={config.topColor} onChange={(v) => set({ topColor: v })} />
+              {config.top !== "uniform" && (
+                <ColorPicker presets={clothColors} value={config.topColor} onChange={(v) => set({ topColor: v })} />
+              )}
             </Field>
             <Field label="Bottom">
               <OptionGrid
@@ -100,7 +116,9 @@ export function Panel() {
                 value={config.bottom}
                 onChange={(v) => set({ bottom: v })}
               />
-              <ColorPicker presets={clothColors} value={config.bottomColor} onChange={(v) => set({ bottomColor: v })} />
+              {config.bottom !== "cargo" && (
+                <ColorPicker presets={clothColors} value={config.bottomColor} onChange={(v) => set({ bottomColor: v })} />
+              )}
             </Field>
           </>
         )}
@@ -118,7 +136,7 @@ export function Panel() {
       <Section title="Extras">
         <Field label="Accessory">
           <OptionGrid options={accessories} value={config.accessory} onChange={(v) => set({ accessory: v })} />
-          {config.accessory !== "none" && config.accessory !== "glasses" && config.accessory !== "sunglasses" && (
+          {!plainAccessory && (
             <ColorPicker
               presets={clothColors}
               value={config.accessoryColor}

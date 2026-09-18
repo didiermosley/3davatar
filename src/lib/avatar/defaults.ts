@@ -2,23 +2,25 @@ import { bottoms, forGender, hairStyles, shoes } from "./options";
 import type { AvatarConfig, Gender } from "./types";
 
 const base: Omit<AvatarConfig, "gender" | "hairStyle"> = {
-  skinColor: "#e0ac69",
-  hairColor: "#3b2a1a",
-  eyeColor: "#3b2314",
+  pregnant: false,
+  pose: "idle",
+  skinColor: "#f6d3b3",
+  hairColor: "#4a3728",
+  eyeColor: "#2a1a10",
   mustache: "none",
   beard: "none",
-  top: "tshirt",
-  topColor: "#1565c0",
+  top: "longsleeve",
+  topColor: "#5b9ee8",
   bottom: "pants",
-  bottomColor: "#1a1a1a",
+  bottomColor: "#2c3e8f",
   dress: "none",
   dressColor: "#c62828",
   shoes: "sneakers",
-  shoeColor: "#ffffff",
+  shoeColor: "#f4f1ea",
   accessory: "none",
   accessoryColor: "#c62828",
   expression: "smile",
-  background: "#1c1f2b",
+  background: "#d08a73",
 };
 
 export const defaults: Record<Gender, AvatarConfig> = {
@@ -39,6 +41,7 @@ export function normalize(config: AvatarConfig): AvatarConfig {
     next.beard = "none";
   } else {
     next.dress = "none";
+    next.pregnant = false;
   }
   return next;
 }

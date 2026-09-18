@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { downloadCanvas, downloadFull } from "@/lib/avatar/export";
 import { encode } from "@/lib/avatar/share";
 import { useAvatar } from "@/lib/avatar/store";
 
@@ -22,7 +23,7 @@ function Button({ onClick, children, active }: { onClick: () => void; children: 
 }
 
 export function Toolbar() {
-  const { config, canvas, autoRotate, randomize, reset, toggleAutoRotate } = useAvatar();
+  const { config, canvas, profileCanvas, autoRotate, randomize, reset, toggleAutoRotate } = useAvatar();
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
@@ -33,14 +34,6 @@ export function Toolbar() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const download = () => {
-    if (!canvas) return;
-    const a = document.createElement("a");
-    a.href = canvas.toDataURL("image/png");
-    a.download = "avatar.png";
-    a.click();
-  };
-
   return (
     <div className="flex flex-wrap gap-2">
       <Button onClick={randomize}>Randomize</Button>
@@ -49,7 +42,11 @@ export function Toolbar() {
         Rotate
       </Button>
       <Button onClick={share}>{copied ? "Copied!" : "Share"}</Button>
-      <Button onClick={download}>Download PNG</Button>
+      <Button onClick={() => canvas && downloadFull(canvas, "avatar.png")}>Full body PNG</Button>
+      <Button onClick={() => profileCanvas && downloadCanvas(profileCanvas, "avatar-profile.png")}>Profile PNG</Button>
+      <Button onClick={() => profileCanvas && downloadCanvas(profileCanvas, "avatar-profile-round.png", true)}>
+        Round PNG
+      </Button>
     </div>
   );
 }

@@ -1,61 +1,70 @@
-import { RoundedBox } from "@react-three/drei";
 import type { AvatarConfig } from "@/lib/avatar/types";
+import { HEAD_R } from "../dims";
 
 const PI = Math.PI;
+const R = HEAD_R + 0.05;
+const TOP = 0.4;
 
 interface Props {
   color: string;
 }
 
 function Mat({ color }: Props) {
-  return <meshStandardMaterial color={color} roughness={0.85} />;
+  return <meshStandardMaterial color={color} roughness={0.75} />;
 }
 
-const TOP = 0.38;
-
-function Cap({ r, length, y = 0, color }: Props & { r: number; length: number; y?: number }) {
+function Cap({ r = R, length, y = 0.03, color }: Props & { r?: number; length: number; y?: number }) {
   return (
     <group position={[0, y, 0]}>
       <mesh castShadow>
-        <sphereGeometry args={[r, 32, 16, 0, PI * 2, 0, PI * TOP]} />
+        <sphereGeometry args={[r, 48, 24, 0, PI * 2, 0, PI * TOP]} />
         <Mat color={color} />
       </mesh>
       <mesh castShadow>
-        <sphereGeometry args={[r, 32, 16, PI * 0.8, PI * 1.4, PI * TOP, PI * (length - TOP)]} />
+        <sphereGeometry args={[r, 48, 24, PI * 0.78, PI * 1.44, PI * TOP, PI * (length - TOP)]} />
         <Mat color={color} />
       </mesh>
     </group>
   );
 }
 
-function Bangs({ r, color }: Props & { r: number }) {
+function Sweep({ color, side = 1 }: Props & { side?: number }) {
   return (
-    <mesh position={[0, 0.03, 0]}>
-      <sphereGeometry args={[r, 32, 8, PI * 0.22, PI * 0.56, PI * 0.3, PI * 0.14]} />
+    <mesh position={[side * 0.16, R * 0.62, HEAD_R * 0.62]} rotation={[0.2, 0, side * -0.42]} scale={[1.5, 0.5, 1]} castShadow>
+      <sphereGeometry args={[0.28, 24, 24]} />
       <Mat color={color} />
     </mesh>
   );
 }
 
-function Back({ r, h, y, taper = 1, color }: Props & { r: number; h: number; y: number; taper?: number }) {
+function SideLock({ color, side, drop = 0.3 }: Props & { side: number; drop?: number }) {
+  return (
+    <mesh position={[side * (HEAD_R - 0.06), -drop / 2, 0.06]} rotation={[0, 0, side * 0.06]} scale={[0.5, 1, 0.85]} castShadow>
+      <capsuleGeometry args={[0.2, drop, 6, 20]} />
+      <Mat color={color} />
+    </mesh>
+  );
+}
+
+function Back({ h, y, taper = 1, color }: Props & { h: number; y: number; taper?: number }) {
   return (
     <mesh position={[0, y, 0]} castShadow>
-      <cylinderGeometry args={[r, r * taper, h, 32, 1, false, PI * 0.32, PI * 1.36]} />
+      <cylinderGeometry args={[R, R * taper, h, 48, 1, false, PI * 0.28, PI * 1.44]} />
       <Mat color={color} />
     </mesh>
   );
 }
 
 const curls = [
-  [0.12, 5],
-  [0.27, 9],
-  [0.42, 12],
+  [0.1, 5],
+  [0.25, 9],
+  [0.4, 12],
 ].flatMap(([theta, count]) =>
   Array.from({ length: count }, (_, i) => {
     const phi = (i / count) * PI * 2 + theta;
-    const r = 0.34;
-    return [r * Math.sin(theta * PI) * Math.cos(phi), r * Math.cos(theta * PI) + 0.02, r * Math.sin(theta * PI) * Math.sin(phi)] as const;
-  }).filter(([, y, z]) => y > 0.12 || z < 0.1),
+    const r = HEAD_R + 0.04;
+    return [r * Math.sin(theta * PI) * Math.cos(phi), r * Math.cos(theta * PI) + 0.03, r * Math.sin(theta * PI) * Math.sin(phi)] as const;
+  }).filter(([, y, z]) => y > 0.25 || z < 0.15),
 );
 
 export function Hair({ config }: { config: AvatarConfig }) {
@@ -64,34 +73,33 @@ export function Hair({ config }: { config: AvatarConfig }) {
     case "bald":
       return null;
     case "buzz":
-      return <Cap r={0.328} length={0.56} y={0.02} color={color} />;
+      return <Cap r={HEAD_R + 0.015} length={0.58} color={color} />;
     case "short":
-      return <Cap r={0.345} length={0.6} y={0.03} color={color} />;
+      return <Cap length={0.64} color={color} />;
     case "quiff":
       return (
         <>
-          <Cap r={0.345} length={0.52} y={0.02} color={color} />
-          <RoundedBox args={[0.3, 0.16, 0.18]} radius={0.06} position={[0, 0.32, 0.15]} rotation={[-0.5, 0, 0]} castShadow>
+          <Cap length={0.6} color={color} />
+          <mesh position={[0, 0.48, 0.2]} rotation={[-0.45, 0, 0]} scale={[1.35, 0.75, 0.95]} castShadow>
+            <sphereGeometry args={[0.3, 24, 24]} />
             <Mat color={color} />
-          </RoundedBox>
+          </mesh>
         </>
       );
     case "sidePart":
       return (
         <>
-          <Cap r={0.345} length={0.55} y={0.02} color={color} />
-          <RoundedBox args={[0.3, 0.09, 0.3]} radius={0.04} position={[0.08, 0.31, 0.06]} rotation={[0, 0, -0.35]} castShadow>
-            <Mat color={color} />
-          </RoundedBox>
+          <Cap length={0.64} color={color} />
+          <Sweep color={color} />
         </>
       );
     case "curly":
       return (
         <>
-          <Cap r={0.35} length={0.62} y={0.02} color={color} />
+          <Cap length={0.64} color={color} />
           {curls.map((p, i) => (
             <mesh key={i} position={[p[0], p[1], p[2]]} castShadow>
-              <sphereGeometry args={[0.085, 12, 12]} />
+              <sphereGeometry args={[0.15, 14, 14]} />
               <Mat color={color} />
             </mesh>
           ))}
@@ -100,45 +108,52 @@ export function Hair({ config }: { config: AvatarConfig }) {
     case "pixie":
       return (
         <>
-          <Cap r={0.35} length={0.66} y={0.02} color={color} />
-          <Bangs r={0.35} color={color} />
+          <Cap length={0.7} color={color} />
+          <Sweep color={color} side={-1} />
         </>
       );
     case "bob":
       return (
         <>
-          <Cap r={0.36} length={0.55} y={0.03} color={color} />
-          <Back r={0.36} h={0.42} y={-0.13} taper={1.05} color={color} />
-          <Bangs r={0.36} color={color} />
+          <Cap length={0.6} color={color} />
+          <Back h={0.6} y={-0.15} taper={1.08} color={color} />
+          {[-1, 1].map((s) => (
+            <SideLock key={s} color={color} side={s} drop={0.18} />
+          ))}
         </>
       );
     case "long":
       return (
         <>
-          <Cap r={0.36} length={0.55} y={0.03} color={color} />
-          <Back r={0.36} h={0.95} y={-0.4} taper={0.75} color={color} />
+          <Cap length={0.6} color={color} />
+          <Back h={1.3} y={-0.5} taper={0.78} color={color} />
+          {[-1, 1].map((s) => (
+            <SideLock key={s} color={color} side={s} drop={0.7} />
+          ))}
         </>
       );
     case "ponytail":
       return (
         <>
-          <Cap r={0.35} length={0.58} y={0.02} color={color} />
-          <mesh position={[0, -0.1, -0.42]} rotation={[0.35, 0, 0]} castShadow>
-            <capsuleGeometry args={[0.075, 0.5, 6, 12]} />
+          <Cap length={0.66} color={color} />
+          <Sweep color={color} />
+          <mesh position={[0, -0.2, -0.62]} rotation={[0.3, 0, 0]} castShadow>
+            <capsuleGeometry args={[0.13, 0.8, 6, 16]} />
             <Mat color={color} />
           </mesh>
-          <mesh position={[0, 0.14, -0.33]} rotation={[0.9, 0, 0]}>
-            <torusGeometry args={[0.07, 0.025, 8, 16]} />
-            <meshStandardMaterial color="#222222" roughness={0.6} />
+          <mesh position={[0, 0.2, -0.55]} rotation={[1, 0, 0]}>
+            <torusGeometry args={[0.12, 0.04, 8, 20]} />
+            <meshStandardMaterial color="#d8425c" roughness={0.6} />
           </mesh>
         </>
       );
     case "bun":
       return (
         <>
-          <Cap r={0.345} length={0.58} y={0.02} color={color} />
-          <mesh position={[0, 0.26, -0.24]} castShadow>
-            <sphereGeometry args={[0.14, 16, 16]} />
+          <Cap length={0.64} color={color} />
+          <Sweep color={color} />
+          <mesh position={[0, 0.45, -0.38]} castShadow>
+            <sphereGeometry args={[0.24, 20, 20]} />
             <Mat color={color} />
           </mesh>
         </>

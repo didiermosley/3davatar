@@ -8,12 +8,14 @@ import type {
   HairStyle,
   Mustache,
   Option,
+  Pose,
+  Preset,
   Shoes,
   Top,
 } from "./types";
 
 export const skinColors = [
-  "#f9dcc4",
+  "#f6d3b3",
   "#f1c27d",
   "#e0ac69",
   "#c68642",
@@ -24,7 +26,7 @@ export const skinColors = [
 
 export const hairColors = [
   "#0f0f0f",
-  "#3b2a1a",
+  "#4a3728",
   "#6b4423",
   "#a0522d",
   "#c9a24e",
@@ -56,7 +58,7 @@ export const clothColors = [
 
 export const shoeColors = ["#ffffff", "#1a1a1a", "#5d4037", "#c62828", "#1565c0", "#f9a825", "#9e9e9e"];
 
-export const backgrounds = ["#1c1f2b", "#2b2438", "#0f3d3e", "#3d1f2b", "#e9e4d6", "#cfe8ff", "#fde2c8"];
+export const backgrounds = ["#d08a73", "#1c1f2b", "#2b2438", "#0f3d3e", "#3d1f2b", "#e9e4d6", "#cfe8ff", "#fde2c8"];
 
 export const hairStyles: Option<HairStyle>[] = [
   { id: "bald", label: "Bald", genders: ["male"] },
@@ -92,11 +94,13 @@ export const tops: Option<Top>[] = [
   { id: "tank", label: "Tank" },
   { id: "longsleeve", label: "Long sleeve" },
   { id: "hoodie", label: "Hoodie" },
+  { id: "uniform", label: "Uniform" },
 ];
 
 export const bottoms: Option<Bottom>[] = [
   { id: "pants", label: "Pants" },
   { id: "shorts", label: "Shorts" },
+  { id: "cargo", label: "Cargo" },
   { id: "skirt", label: "Skirt", genders: ["female"] },
 ];
 
@@ -121,12 +125,26 @@ export const accessories: Option<Accessory>[] = [
   { id: "cap", label: "Cap" },
   { id: "beanie", label: "Beanie" },
   { id: "hat", label: "Hat" },
+  { id: "helmet", label: "Helmet" },
 ];
 
 export const expressions: Option<Expression>[] = [
   { id: "smile", label: "Smile" },
   { id: "neutral", label: "Neutral" },
   { id: "surprised", label: "Surprised" },
+];
+
+export const poses: Option<Pose>[] = [
+  { id: "idle", label: "Idle" },
+  { id: "walk", label: "Walk" },
+  { id: "wave", label: "Wave" },
+];
+
+export const presets: Option<Preset>[] = [
+  { id: "casual", label: "Casual" },
+  { id: "soldier", label: "Soldier" },
+  { id: "formal", label: "Formal" },
+  { id: "sporty", label: "Sporty" },
 ];
 
 export function forGender<T extends string>(list: Option<T>[], gender: Gender) {

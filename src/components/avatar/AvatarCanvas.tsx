@@ -4,6 +4,7 @@ import { ContactShadows, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useAvatar } from "@/lib/avatar/store";
 import { Avatar } from "./Avatar";
+import { Lights } from "./Lights";
 
 export default function AvatarCanvas() {
   const background = useAvatar((s) => s.config.background);
@@ -13,23 +14,28 @@ export default function AvatarCanvas() {
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ position: [0, 1.5, 5.8], fov: 30 }}
+      camera={{ position: [0.6, 1.9, 7.2], fov: 28 }}
       gl={{ preserveDrawingBuffer: true, antialias: true }}
       onCreated={({ gl }) => setCanvas(gl.domElement)}
     >
       <color attach="background" args={[background]} />
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[3, 6, 4]} intensity={1.8} castShadow shadow-mapSize={[2048, 2048]} />
-      <directionalLight position={[-4, 3, -3]} intensity={0.5} />
+      <fog attach="fog" args={[background, 9, 22]} />
+      <Lights background={background} />
       <Avatar />
-      <ContactShadows position={[0, 0, 0]} opacity={0.5} scale={5} blur={2.2} far={3} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <circleGeometry args={[30, 64]} />
+        <meshStandardMaterial color={background} roughness={1} />
+      </mesh>
+      <ContactShadows position={[0, 0.005, 0]} opacity={0.45} scale={6} blur={2.4} far={3} />
       <OrbitControls
-        target={[0, 1.2, 0]}
+        target={[0, 1.3, 0]}
         enablePan={false}
+        enableZoom
+        zoomSpeed={0.8}
         minDistance={2.5}
-        maxDistance={9}
-        minPolarAngle={0.3}
-        maxPolarAngle={Math.PI / 2 + 0.1}
+        maxDistance={11}
+        minPolarAngle={0.2}
+        maxPolarAngle={Math.PI / 2 - 0.02}
         autoRotate={autoRotate}
         autoRotateSpeed={2}
       />

@@ -15,15 +15,19 @@ export type HairStyle =
 
 export type Mustache = "none" | "chevron" | "handlebar" | "pencil";
 export type Beard = "none" | "stubble" | "goatee" | "full";
-export type Top = "tshirt" | "vneck" | "tank" | "longsleeve" | "hoodie";
-export type Bottom = "pants" | "shorts" | "skirt";
+export type Top = "tshirt" | "vneck" | "tank" | "longsleeve" | "hoodie" | "uniform";
+export type Bottom = "pants" | "shorts" | "cargo" | "skirt";
 export type Dress = "none" | "sundress" | "gown";
 export type Shoes = "sneakers" | "boots" | "sandals" | "heels" | "dress";
-export type Accessory = "none" | "glasses" | "sunglasses" | "cap" | "beanie" | "hat";
+export type Accessory = "none" | "glasses" | "sunglasses" | "cap" | "beanie" | "hat" | "helmet";
 export type Expression = "smile" | "neutral" | "surprised";
+export type Pose = "idle" | "walk" | "wave";
+export type Preset = "casual" | "soldier" | "formal" | "sporty";
 
 export interface AvatarConfig {
   gender: Gender;
+  pregnant: boolean;
+  pose: Pose;
   skinColor: string;
   hairColor: string;
   eyeColor: string;

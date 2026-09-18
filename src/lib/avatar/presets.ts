@@ -1,0 +1,48 @@
+import type { AvatarConfig, Preset } from "./types";
+
+export const presetPatches: Record<Preset, Partial<AvatarConfig>> = {
+  casual: {
+    top: "tshirt",
+    topColor: "#5b9ee8",
+    bottom: "pants",
+    bottomColor: "#2c3e8f",
+    dress: "none",
+    shoes: "sneakers",
+    shoeColor: "#f4f1ea",
+    accessory: "none",
+  },
+  soldier: {
+    top: "uniform",
+    topColor: "#4b5d3a",
+    bottom: "cargo",
+    bottomColor: "#4b5d3a",
+    dress: "none",
+    shoes: "boots",
+    shoeColor: "#1f1a14",
+    accessory: "helmet",
+    accessoryColor: "#3f4d31",
+    expression: "neutral",
+  },
+  formal: {
+    top: "longsleeve",
+    topColor: "#1a1a1a",
+    bottom: "pants",
+    bottomColor: "#1a1a1a",
+    dress: "none",
+    shoes: "dress",
+    shoeColor: "#1a1a1a",
+    accessory: "glasses",
+  },
+  sporty: {
+    top: "tank",
+    topColor: "#f9a825",
+    bottom: "shorts",
+    bottomColor: "#1a1a1a",
+    dress: "none",
+    shoes: "sneakers",
+    shoeColor: "#ffffff",
+    accessory: "cap",
+    accessoryColor: "#1565c0",
+    pose: "walk",
+  },
+};
